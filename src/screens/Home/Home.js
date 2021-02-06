@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CytoscapeComponent from "react-cytoscapejs";
 //import axios from "axios";
 //import cytoscape from "cytoscape";
@@ -12,43 +12,27 @@ import getElement from "../../services/getElement";
  */
 function Home() {
   let cyto;
-
-  let elements = {
-    edges: [
-      {
-        data: {
-          source: "one",
-          target: "two",
-          label: "Edge from Node1 to Node2",
-        },
-      },
-    ],
-    nodes: [
-      { data: { id: "one", label: "Node 1" } },
-      { data: { id: "two", label: "Node 2" } },
-    ],
-  };
-
   var state = {
-    w: 800,
-    h: 600,
+    w: 2000,
+    h: 2000,
     layout: {
       name: "random",
+      padding: 20,
     },
     stylesheet: [
       {
         selector: "node",
         style: {
           content: "data(id)",
-          width: 20,
-          height: 20,
+          width: 5,
+          height: 5,
         },
       },
       {
         selector: "edge",
         style: {
-          width: 5,
-          content: "data(label)",
+          width: 2,
+          content: "data(id)",
           "curve-style": "bezier",
           "target-arrow-shape": "triangle",
           "line-color": "#ddd",
@@ -63,24 +47,37 @@ function Home() {
     cyto.style().selector("node").style("background-color", "magenta").update(); // indicate the end of your new stylesheet so that it can be updated on elements
   }
 
+  const [elementos, setElementos] = useState({});
+  const [load, setLoad] = useState(false);
+
   async function prueba() {
     const firstCall = await getElement();
-    //console.log("first", firstCall);
-    return firstCall;
+    console.log("first", firstCall);
+    setElementos(firstCall);
+    setLoad(true);
   }
+
+  useEffect(() => {
+    const el = prueba();
+    setElementos(el);
+  }, []);
 
   return (
     <>
-      <CytoscapeComponent
-        id="component"
-        elements={CytoscapeComponent.normalizeElements(prueba())} 
-        style={{ width: state.w, height: state.h }}
-        layout={state.layout}
-        stylesheet={state.stylesheet}
-        cy={(cy) => {
-        getCy(cy);
-        }}
-      />
+      {load ? (
+        <CytoscapeComponent
+          id="component"
+          elements={CytoscapeComponent.normalizeElements(elementos)}
+          style={{ width: state.w, height: state.h }}
+          layout={state.layout}
+          stylesheet={state.stylesheet}
+          cy={(cy) => {
+            getCy(cy);
+          }}
+        />
+      ) : (
+        "not"
+      )}
     </>
   );
 }

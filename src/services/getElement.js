@@ -2,29 +2,15 @@ import axios from 'axios';
 
 const URL = "https://prueba-backends.herokuapp.com/" 
 
-async function getElement( ) {
-  
+async function getElement() {
+
+  //console.log("dummy", element);
     
       let response = await axios.get(URL);
-      console.log("respuesta", response.data.elements);
+      console.log("respuesta", response.data.elements.nodes);
       return (response.data.elements);
     
 
-    let elements = {
-      edges: [
-        {
-          data: {
-            source: "one",
-            target: "two",
-            label: "Edge from Node1 to Node2",
-          },
-        },
-      ],
-      nodes: [
-        { data: { id: "one", label: "Node 1" } },
-        { data: { id: "two", label: "Node 2" } },
-      ],
-    };
 
     //return elements;
   
